@@ -39,9 +39,11 @@ class Blockchain(object):
         }
 
         # Reset the current list of transactions
+        self.current_transactions = []
         # Append the chain to the block
+        self.chain.append(block)
         # Return the new block
-        pass
+        return block
 
     def hash(block):
         """
