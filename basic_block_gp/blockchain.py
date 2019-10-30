@@ -31,7 +31,11 @@ class Blockchain(object):
         """
 
         block = {
-            # TODO
+            'index': len(self.chain) + 1, # length of the chain plus 1
+            'timestamp': time(), # use the time function
+            'transactions': self.current_transactions, # ref to the current transactions of the blockchain
+            'proof': proof, # the proof provided to the function
+            'previous_hash': previous_hash or self.hash(self.chain[-1]), # the hash supplied to the function or the one derived from previous block
         }
 
         # Reset the current list of transactions
