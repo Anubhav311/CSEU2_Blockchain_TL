@@ -60,7 +60,7 @@ class Blockchain(object):
         # It convertes the string to bytes.
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
-        string_object json.dump(block, sort_keys=True)
+        string_object = json.dump(block, sort_keys=True)
 
         # TODO: Create the block_string
         block_string = string_object.encode()
@@ -91,7 +91,7 @@ class Blockchain(object):
         :return: A valid proof for the provided block
         """
         # create a block string from the encoded dump
-        block_string json.dumps(self.last_block, sort_keys=True).encode()
+        block_string = json.dumps(self.last_block, sort_keys=True).encode()
 
         # set initial proof values
         proof = 0
@@ -100,7 +100,7 @@ class Blockchain(object):
         while self.valid_proof(block_string) is False:
             # increment proof
             proof += 1
-            
+
         # return proof
         return proof
 
@@ -139,11 +139,23 @@ blockchain = Blockchain()
 @app.route('/mine', methods=['GET'])
 def mine():
     # Run the proof of work algorithm to get the next proof
+    proof = blockchain.proof_of_work(blockchain.chain[-1])
 
     # Forge the new Block by adding it to the chain with the proof
+    blockchain.new_transaction(sender="0", recipient=node_identifier, amount=1)
+
+    # previous hash
+    previous_hash = blockchain.hash(blockchain.last_block)
+
+    # Forge new block
+    block = blockchain.new_block(proof, previous_hash)
 
     response = {
-        # TODO: Send a JSON response with the new block
+        'message': 'New block forged',
+        'index': block['index'],
+        'transactions': block['transactions'],
+        'proof': block['proof'],
+        'previous_hash': block['previous_hash']
     }
 
     return jsonify(response), 200
