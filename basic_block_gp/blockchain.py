@@ -60,7 +60,7 @@ class Blockchain(object):
         # It convertes the string to bytes.
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
-        string_object = json.dump(block, sort_keys=True)
+        string_object json.dump(block, sort_keys=True)
 
         # TODO: Create the block_string
         block_string = string_object.encode()
@@ -90,9 +90,19 @@ class Blockchain(object):
         in an effort to find a number that is a valid proof
         :return: A valid proof for the provided block
         """
-        # TODO
-        pass
+        # create a block string from the encoded dump
+        block_string json.dumps(self.last_block, sort_keys=True).encode()
+
+        # set initial proof values
+        proof = 0
+
+        # loop over the proofs and check if valid
+        while self.valid_proof(block_string) is False:
+            # increment proof
+            proof += 1
+            
         # return proof
+        return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
