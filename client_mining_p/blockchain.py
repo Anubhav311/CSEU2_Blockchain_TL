@@ -62,7 +62,7 @@ class Blockchain(object):
         # It convertes the string to bytes.
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
-        string_object = json.dump(block, sort_keys=True)
+        string_object = json.dumps(block, sort_keys=True)
 
         # TODO: Create the block_string
         block_string = string_object.encode()
@@ -142,14 +142,14 @@ blockchain = Blockchain()
 def mine():
     data = request.get_json()
     # check that proof and id are present in the data
+    print(data)
     if not data.get("id") or not data.get("proof"):
         # if not return a 400 with a message
         return jsonify({
             "message": "Request body must have id and proof"
         }), 400
     # find the string of the last block
-    last_block_string = json.dumps(
-        blockchain.last_block, sort_keys=True).encode()
+    last_block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
     # verify if proof is valid
     is_valid = blockchain.valid_proof(last_block_string, data["proof"])
 
@@ -183,7 +183,6 @@ def last_block():
     response = {
         'last_block': blockchain.last_block
     }
-    print('found it')
     return jsonify(response), 200
 
 
