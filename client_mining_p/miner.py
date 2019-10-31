@@ -64,6 +64,8 @@ if __name__ == '__main__':
     id = f.read()
     print("ID is", id)
     f.close()
+    mined_coins = 0
+
 
     # Run forever until interrupted
     while True:
@@ -77,8 +79,8 @@ if __name__ == '__main__':
             print(r)
             break
 
-        # TODO: Get the block from `data` and use it to look for a new proof
-        # new_proof = ???
+        # Get the block from `data` and use it to look for a new proof
+        new_proof = proof_of_work(data['last_block'])
 
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
@@ -86,7 +88,14 @@ if __name__ == '__main__':
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
 
-        # TODO: If the server responds with a 'message' 'New Block Forged'
+        # If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
-        pass
+        if r.status_code == 201:
+            mined_coins += 1
+            print('total mined coins: ', mined_coins)
+            print('mined block: ', data['block'])
+            print('______________________')
+        elif r.status_code == 400:
+            print('error message', data)
+
