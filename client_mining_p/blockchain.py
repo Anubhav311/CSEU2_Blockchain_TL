@@ -171,10 +171,19 @@ def mine():
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
-        # TODO: Return the chain and its current length
+        # Return the chain and its current length
         'length': len(blockchain.chain), # length
         'chain': blockchain.chain # chain
     }
+    return jsonify(response), 200
+
+
+@app.route('/last_block', methods=['GET'])
+def last_block():
+    response = {
+        'last_block': blockchain.last_block
+    }
+    print('found it')
     return jsonify(response), 200
 
 
