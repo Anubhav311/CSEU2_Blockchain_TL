@@ -49,6 +49,17 @@ class Blockchain(object):
         # Return the new block
         return block
 
+    def new_transactions(self, sender, recipient, amount):
+        """
+        Creates a new transaction to go into the next mined block
+
+        :param sender: <str> Address of the recipient
+        :param recipient: <str> Address of the recipient
+        :param amount: <int> Amount
+        :return: <int> The index of the block that will hold this transaction
+        """
+        pass
+
     def hash(self, block):
         """
         Creates a SHA-256 hash of a Block
