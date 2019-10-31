@@ -179,6 +179,9 @@ def mine():
         # create a new block and add it to the chain
         block = blockchain.new_block(data["proof"])
 
+        # reward for the miner for work
+        blockchain.new_transactions(sender='0', recipient=node_identifier, amount=1)
+
         return jsonify({
             "message": "New Block Forged.",
             'block': block
