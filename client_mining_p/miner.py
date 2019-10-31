@@ -5,7 +5,7 @@ import sys
 import json
 
 
-def proof_of_work(block):
+def proof_of_work(last_block):
     """
     Simple Proof of Work Algorithm
     Stringify the block and look for a proof.
@@ -13,7 +13,19 @@ def proof_of_work(block):
     in an effort to find a number that is a valid proof
     :return: A valid proof for the provided block
     """
-    pass
+    # create a block string from the encoded dump
+    block_string = json.dumps(last_block, sort_keys=True).encode()
+
+    # set initial proof values
+    proof = 0
+
+    # loop over the proofs and check if valid
+    while valid_proof(block_string, proof) is False:
+        # increment proof
+        proof += 1
+
+    # return proof
+    return proof
 
 
 def valid_proof(block_string, proof):
