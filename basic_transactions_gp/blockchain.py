@@ -210,6 +210,30 @@ def last_block():
     return jsonify(response), 200
 
 
+@app.route('/transactions/new', methods=['POST'])
+def new_transactions():
+    # get the value in json format
+    values = request.get_json()
+
+    # check that the required fields exist
+    required_fields = ['sender', 'recipient', 'amount']
+
+    if not all(k in values for k in required_fields):
+        response = {
+            'message': 'Error! missing values'
+        }
+        return json(response), 400
+
+    # create a new transaction
+    index = blockchain.new_transactions(values['sender'], values['recipient'], values['amount'])
+
+    # set the response object with a message that the transaction will be added at the index
+    response = {'message': f'Transaction will be added to Block {index}'}
+
+    # return the response
+    return json(response), 201
+
+
 # Run the program on port 5000
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
