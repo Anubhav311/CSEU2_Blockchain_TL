@@ -138,29 +138,34 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/mine', methods=['POST'])
 def mine():
-    # Run the proof of work algorithm to get the next proof
-    proof = blockchain.proof_of_work(blockchain.chain[-1])
+    data = request.get_json()
+    # check that proof and id are present in the data
+    if not data.get("id") or not data.get("proof"):
+        # if not return a 400 with a message
+        return jsonify({
+            "message": "Request body must have id and proof"
+        }), 400
+    # find the string of the last block
+    last_block_string = json.dumps(
+        blockchain.last_block, sort_keys=True).encode()
+    # verify if proof is valid
+    is_valid = blockchain.valid_proof(last_block_string, data["proof"])
 
-    # Forge the new Block by adding it to the chain with the proof
-    blockchain.new_transaction(sender="0", recipient=node_identifier, amount=1)
+    # return a message indicating success or failure
+    if is_valid:
+        # create a new block and add it to the chain
+        block = blockchain.new_block(data["proof"])
 
-    # previous hash
-    previous_hash = blockchain.hash(blockchain.last_block)
-
-    # Forge new block
-    block = blockchain.new_block(proof, previous_hash)
-
-    response = {
-        'message': 'New block forged',
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash']
-    }
-
-    return jsonify(response), 200
+        return jsonify({
+            "message": "New Block Forged.",
+            'block': block
+        }), 201
+    else:
+        return jsonify({
+            "message": "Unable to forge block!"
+        }), 400
 
 
 @app.route('/chain', methods=['GET'])
